@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import {
   Box,
-  Button,
-  CircularProgress,
   Container,
-  Dialog,
-  IconButton,
-  Rating,
   Stack,
   Typography,
   useTheme,
+  CircularProgress,
+  Button,
+  Rating,
+  Dialog,
+  IconButton,
 } from "@mui/material";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
@@ -18,15 +18,12 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import AddShoppingCartOutlinedIcon from "@mui/icons-material/AddShoppingCartOutlined";
+import { AnimatePresence, motion } from "framer-motion";
 import { Close } from "@mui/icons-material";
 import ProductDetails from "./ProductDetails";
-import { AnimatePresence, motion } from "framer-motion";
-import Header1 from "../components/header/Header1";
 
-
-
-
-const Products = () => {
+const Main = () => {
+  const [alignment, setAlignment] = useState("all"); // État pour la valeur sélectionnée
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [data, setData] = useState([
@@ -53,19 +50,30 @@ const Products = () => {
       },
     },
     {
-        id: 3,
-        attributes: {
-          productTitle: "Sample Product 2",
-          productPrice: 60,
-          productRating: 4,
-          productImg: {
-            data: [{ attributes: { url: "https://via.placeholder.com/300" } }],
-          },
+      id: 3,
+      attributes: {
+        productTitle: "Sample Product 3",
+        productPrice: 70,
+        productRating: 3.5,
+        productImg: {
+          data: [{ attributes: { url: "https://via.placeholder.com/300" } }],
         },
       },
+    },
     // Ajoutez autant de produits factices que nécessaire
   ]);
   const [clickedProduct, setClickedProduct] = useState({});
+
+  const handleAlignment = (event, newAlignment) => {
+    setAlignment(newAlignment);
+  };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   if (!data) {
     return (
@@ -76,18 +84,87 @@ const Products = () => {
   }
 
   return (
-    <div>
-      <Header1 />
-      
-      <Container sx={{ py: 9 }}>
-        {/* Votre code pour les boutons de filtrage peut rester inchangé */}
-        <Stack
-          direction={"row"}
-          flexWrap={"wrap"}
-          justifyContent={"space-between"}
+    <Container sx={{ py: 9 }}>
+      <Stack
+        direction={"row"}
+        alignItems={"center"}
+        justifyContent={"space-between"}
+        flexWrap={"wrap"}
+        gap={3}
+      >
+        <Box>
+          <Typography variant="h6">Selected Products</Typography>
+          <Typography fontWeight={300} variant="body1">
+            All our new arrivals in an exclusive brand selection
+          </Typography>
+        </Box>
+
+        <ToggleButtonGroup
+          color="error"
+          value={alignment}
+          exclusive
+          onChange={handleAlignment}
+          aria-label="text alignment"
+          sx={{
+            ".Mui-selected": {
+              border: "1px solid rgba(233, 69, 96, 0.5) !important",
+              color: "#e94560",
+              backgroundColor: "initial",
+            },
+          }}
         >
-          <AnimatePresence>
-            {data.map((item) => (
+          <ToggleButton
+            sx={{ color: theme.palette.text.primary }}
+            className="myButton"
+            value="all"
+            aria-label="left aligned"
+          >
+            Tous les produits
+          </ToggleButton>
+
+          <ToggleButton
+            sx={{ mx: "16px !important", color: theme.palette.text.primary }}
+            className="myButton"
+            value="hommes"
+            aria-label="centered"
+          >
+            Hommes
+          </ToggleButton>
+
+          <ToggleButton
+            sx={{ mx: "16px", color: theme.palette.text.primary }}
+            className="myButton"
+            value="femmes"
+            aria-label="right aligned"
+          >
+            Femmes
+          </ToggleButton>
+
+          <ToggleButton
+            sx={{ mx: "16px", color: theme.palette.text.primary }}
+            className="myButton"
+            value="enfants"
+            aria-label="right aligned"
+          >
+            Enfants
+          </ToggleButton>
+
+          <ToggleButton
+            sx={{ mx: "16px", color: theme.palette.text.primary }}
+            className="myButton"
+            value="autre"
+            aria-label="right aligned"
+          >
+            Acéssoire et chaussures
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </Stack>
+
+      <Stack direction={"row"} flexWrap={"wrap"} justifyContent={"space-between"}>
+        <AnimatePresence>
+          {data
+            .filter((item) => alignment === "all" || item.attributes.category === alignment)
+            .map((item) => (
               <Card
                 component={motion.section}
                 layout
@@ -132,16 +209,16 @@ const Products = () => {
                 </CardContent>
 
                 <CardActions sx={{ justifyContent: "space-between" }}>
-                  <Button
-                    onClick={() => {
-                      setClickedProduct(item);
-                    }}
-                    sx={{ textTransform: "capitalize" }}
-                    size="large"
-                  >
+                    <Button
+                      onClick={() => {
+                      handleClickOpen(); // Appel correct de la fonction handleClickOpen
+                      }}
+                      sx={{ textTransform: "capitalize" }}
+                      size="large"
+                    >
                     <AddShoppingCartOutlinedIcon sx={{ mr: 1 }} fontSize="small" />
-                    add to cart
-                  </Button>
+                     add to cart
+                    </Button>
                   <Rating
                     precision={0.1}
                     name="read-only"
@@ -151,12 +228,13 @@ const Products = () => {
                 </CardActions>
               </Card>
             ))}
-          </AnimatePresence>
-        </Stack>
+        </AnimatePresence>
+      </Stack>
 
-        <Dialog
+      <Dialog
           sx={{ ".MuiPaper-root": { minWidth: { xs: "100%", md: 800 } } }}
           open={open}
+          onClose={handleClose}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -167,15 +245,15 @@ const Products = () => {
               top: 0,
               right: 10,
             }}
+            onClick={handleClose}
           >
             <Close />
           </IconButton>
 
-          <ProductDetails clickedProduct={clickedProduct} />
+          <ProductDetails  />
         </Dialog>
-      </Container>
-    </div>
+    </Container>
   );
 };
 
-export default Products;
+export default Main;

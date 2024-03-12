@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { ExpandMore, ShoppingCartOutlined } from "@mui/icons-material";
 import {
   Badge,
@@ -8,9 +7,11 @@ import {
   Stack,
   Typography,
   useTheme,
+  Backdrop,
+  Drawer,
+  Grid,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { styled } from "@mui/material/styles";
 import Person2OutlinedIcon from "@mui/icons-material/Person2Outlined";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useState } from "react";
@@ -19,6 +20,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
+import { styled } from "@mui/material/styles";
 
 const Search = styled("div")(({ theme }) => ({
   flexGrow: 0.4,
@@ -71,12 +73,14 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 
-const options = ["All Categories", "CAR", "Clothes", "Electronics"];
+const options = ["All Categories", "Hommes", "Femmes", "Enfants", "Accessoires et chaussures"];
 
 const Header2 = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const open = Boolean(anchorEl);
+
   const handleClickListItem = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -90,6 +94,14 @@ const Header2 = () => {
     setAnchorEl(null);
   };
 
+  const handleCartClick = () => {
+    setIsCartOpen(true);
+  };
+
+  const handleCloseCart = () => {
+    setIsCartOpen(false);
+  };
+
   const theme = useTheme();
 
   return (
@@ -97,7 +109,7 @@ const Header2 = () => {
       <Stack alignItems={"center"}>
         <ShoppingCartOutlined sx={{ color: "#0D6EFD" }} />
         <Typography variant="body2" sx={{ color: "#0D6EFD" }}>ShopOnline</Typography>
-      </Stack>   
+      </Stack>
 
       <Search
         sx={{
@@ -171,7 +183,7 @@ const Header2 = () => {
       </Search>
 
       <Stack direction={"row"} alignItems={"center"}>
-        <IconButton aria-label="cart">
+        <IconButton aria-label="cart" onClick={handleCartClick}>
           <StyledBadge badgeContent={4} color="primary">
             <ShoppingCartIcon />
           </StyledBadge>
@@ -181,6 +193,19 @@ const Header2 = () => {
           <Person2OutlinedIcon />
         </IconButton>
       </Stack>
+
+      {/* Affichage du panier */}
+      <Backdrop open={isCartOpen} onClick={handleCloseCart}>
+        <Drawer anchor="right" open={isCartOpen} onClose={handleCloseCart}>
+          <Grid container style={{ width: 600 }}>
+            <Grid item xs={12}>
+              {/* Contenu du panier */}
+              <h2>Panier</h2>
+              
+            </Grid>
+          </Grid>
+        </Drawer>
+      </Backdrop>
     </Container>
   );
 };
