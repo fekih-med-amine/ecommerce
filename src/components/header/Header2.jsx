@@ -10,6 +10,8 @@ import {
   Backdrop,
   Drawer,
   Grid,
+  Box,
+
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import Person2OutlinedIcon from "@mui/icons-material/Person2Outlined";
@@ -21,6 +23,8 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { styled } from "@mui/material/styles";
+import Card from "../card/Card";
+import { Link } from 'react-router-dom';
 
 const Search = styled("div")(({ theme }) => ({
   flexGrow: 0.4,
@@ -188,19 +192,22 @@ const Header2 = () => {
             <ShoppingCartIcon />
           </StyledBadge>
         </IconButton>
-
+        <Link to="/profil" style={{ textDecoration: 'none' }}>
         <IconButton>
           <Person2OutlinedIcon />
         </IconButton>
+        </Link>
       </Stack>
 
       {/* Affichage du panier */}
-      <Backdrop open={isCartOpen} onClick={handleCloseCart}>
+      <Backdrop open={isCartOpen}>
         <Drawer anchor="right" open={isCartOpen} onClose={handleCloseCart}>
           <Grid container style={{ width: 600 }}>
             <Grid item xs={12}>
-              {/* Contenu du panier */}
-              <h2>Panier</h2>
+            <Box sx={{ backgroundColor: '#0D6EFD', padding: '10px', borderRadius: '5px', marginBottom: '10px' }}>
+              <Typography variant="h6" sx={{ color: '#fff' }}>Panier</Typography>
+            </Box>
+            <Card />
               
             </Grid>
           </Grid>
